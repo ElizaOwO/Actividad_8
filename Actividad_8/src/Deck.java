@@ -1,7 +1,10 @@
 
 //Importar librerias de la colección
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.*;
+import java.util.Arrays;
+import java.util.function.Function;
 
 //Clase de la baraja
 public class Deck {
@@ -41,6 +44,12 @@ public class Deck {
 
         opcion = sc.nextInt();
 
+        try{
+            int opcionIngresada []= {0,1,2,3,4,5};
+            System.out.println("###Se ha seleccionado la opción: "+ opcionIngresada[opcion]);
+        }catch (ArrayIndexOutOfBoundsException ex){
+            System.out.println("⚠️⚠️Ingresa una opción válida");
+        }
         return opcion;
     }
 
@@ -76,44 +85,60 @@ public class Deck {
                     System.out.println("-.-.-.-.-.-.-.-.-.-.-.-.-.-.-Ver baraja-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-");
                     imprimirArray(array);
                     break;
-                default:
-                    System.out.println("⚠️⚠️Ingresa una opción válida");
             }
         }
     }
 
     //Método que barajea
     private static void shuffle() {
-        Collections.shuffle(array);
-        System.out.println("Se mezcló el Deck");
+
+        if(array.size()!=0) {
+            Collections.shuffle(array);
+            System.out.println("Se mezcló el Deck");
+        }else{
+            System.out.println("Ya no hay cartas");
+        }
     }
+
 
     //Método que elimina la primera carta e imprime en pantalla
     //la cantidad de cartas actuales
     private static void head() {
-        System.out.println(array.get(0));
-        array.remove(0);
-
-        System.out.println("Quedan " + array.size() + " cartas");
+        try {
+            System.out.println(array.get(0));
+            array.remove(0);
+            System.out.println("Quedan " + array.size() + " cartas");
+        }catch (IndexOutOfBoundsException ex){
+            System.out.println("Ya no hay cartas");
+        }
     }
 
     //Método que elimina una carta al azar e imprime en pantalla
     //la cantidad de cartas actuales
     private static void pick() {
-        Card carta = (array.get((int) (Math.random() * array.size())));
-        System.out.println(carta);
-        array.remove(carta);
-        System.out.println("Quedan " + array.size() + " cartas");
+        try {
+            Card carta = (Card) (array.get((int) (Math.random() * array.size())));
+            System.out.println(carta);
+            array.remove(carta);
+            System.out.println("Quedan " + array.size() + " cartas");
+        }catch (IndexOutOfBoundsException ex){
+            System.out.println("Ya no hay cartas");
+        }
     }
 
     //Método que elimina 5 cartas y devuelve
     //un arreglo con dichas cartas
     private static ArrayList<Card> hand() {
         ArrayList<Card> cartas = new ArrayList<>();
-
-        for (int i = 0; i < 5; i++) {
-            cartas.add(array.get(i));
-            array.remove(i);
+        int i=0;
+        try {
+            while (i < 5) {
+                cartas.add(array.get(0));
+                array.remove(0);
+                i++;
+            }
+        }catch (IndexOutOfBoundsException ex){
+            System.out.println("Ya no hay cartas");
         }
         return cartas;
     }
@@ -131,7 +156,7 @@ public class Deck {
     //Método que devuelve un string
     //del palo correspondiente
     private static String palo() {
-        String palo;
+        String palo = "";
         if (contador < 13) {
             palo = "♣ ";
         } else if (contador < 26) {
@@ -147,7 +172,7 @@ public class Deck {
     //Método que devuelve un string
     //del color correspondiente
     private static String color() {
-        String color;
+        String color = "";
         if (contador < 26) {
             color = "⬛";
         } else {
